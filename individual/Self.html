@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="subjects.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <title>Individual</title>
+
+
+</head>
+<body>
+
+    <div id="open">
+        <header>
+           <h1 v-text="sitename" class="text-center"></h1> 
+           <button v-on:click='showCheckout' v-show="cartItemCount >0" v-if="buttonvalue()">
+            {{cartItemCount}}
+
+            <span class="fas fa-cart-plus">Checkout</span>
+           </button>
+           <div style="display: flex; flex-wrap: wrap;">
+            <div v-for="subject in cart2" v-show="showCartItems">
+                <h3 v-text="subject.title"></h3>
+                <figure>
+                    <img v-bind:src="subject.image" height="70" width="70">
+                </figure>
+                <p>Location:{{subject.location}}</p>
+                <p>Price:$ {{subject.price}}</p>
+                <p>Spaces: only {{subject.availableInventory - cartCount(subject.id)}} are left!</p>
+                <button v-on:click='removeproduct(subject)' v-if='canAddToCart(subject)'>Remove from cart</button> 
+
+                <button disabled="disable" v-else></button>
+                </div>
+
+            </div>
+        </header>
+       
+    
+</body>
+</html>

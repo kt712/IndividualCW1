@@ -129,7 +129,208 @@
             </div>
         </main>
     </div>
+    <script type="text/javascript">
+        var myClass = new Vue({
+            el: '#open',
+            data: {
     
+    sitename: 'Welcome to Ismails classroom',
+    subjects: mySub,
+
+    display: false,
+    
+    cart: [],
+    cart2: [],
+    showSubject: true,
+    showCartItems:false,
+
+    order: {
+        firstName: '',
+        lastName: '',
+        phone: '',
+       
+    },
+
+},
+methods: {
+   addToCart(subject) {
+   this.cart.push(subject.id);
+   this.cart2.push(subject);
+    
+    
+    
+   },
+   
+sortedsub() {
+    function compare(x, y) {
+        if (x.title > y.title)
+           return 1;
+        else{
+           return -1;
+          }
+                        
+    
+    
+        }
+        return this.subjects.sort(compare);
+    
+    },
+    sortedinventory() {
+       function compare(x, y) {
+         if (x.availableInventory > y.availableInventory)
+            return 1;
+         else{
+            return -1;
+          }
+    
+    
+        }
+     return this.subjects.sort(compare);
+    },
+    
+     sortedlocation() {
+                        function compare(x, y) {
+                            if (x.location > y.location)
+                                return 1;
+                           else{
+                               return -1;
+                           }
+    
+    
+                        }
+                        return this.subjects.sort(compare);
+    
+                    },
+    
+                    sortedprice() {
+                        function compare(x, y) {
+                            if (x.price > y.price)
+                                return 1;
+                            else{
+                                return -1
+                            };
+    
+                        }
+                        return this.subjects.sort(compare);
+    
+                    },   
+                    sortingasc() {
+                        function compare(a, b) {
+                            if (a.title > b.title)
+                                return 1;
+                           else{
+                               return -1;
+                           }
+    
+    
+                        }
+                        return this.subjects.sort(compare);
+    
+                    },
+
+
+                    sortingdsc() {
+                        function compare(a, b) {
+                            if (a.title < b.title)
+                                return 1;
+                           else{
+                               return -1
+                           }
+    
+    
+                        }
+                        return this.subjects.sort(compare);
+    
+                    },
+                    showCheckout() {
+                        this.showSubject = this.showSubject ? false : true;
+                        this.showCartItems=this.showCartItems ? false:true;
+                        
+    
+                    },
+                    submitForm(l, b, c) {
+                        if (this.order.firstName == "" && this.order.lastName == "" && this.order.phone == "") {
+    
+                             alert('PLEASE ENTER YOUR DETAILS FOR ORDERS')
+    
+                        }
+                        if (this.order.firstName == "") {
+                             alert('PLEASE ENTER YOUR NAME')
+                        }
+                        if (this.order.lastName == "") {
+                            return alert('PLEASE ENTER YOU LASTNAME')
+                        }
+                        if (this.order.phone == "") {
+                            return alert('PLEASE ENTER YOUR MOBILE NUM OR PHONE', { background: 'black' });
+                        }
+                        else {
+    
+    
+                            this.order.firstName = "";
+                            this.order.lastName = "";
+                            this.order.phone = "";
+    
+                            return alert(' You have succesfully placed order')
+    
+    
+                        }
+    
+                    },
+                    canAddToCart(subject) {
+                        return subject.availableInventory > this.cartCount(subject.id);
+                    },
+                    cartCount(id) {
+    
+                        let count = 0;
+                        for (let i = 0; i < this.cart.length; i++) {
+                            if (this.cart[i] === id) {
+                                count++;
+    
+    
+                            }
+                        }
+                        return count;
+    
+    
+                    },
+                   
+                    buttonvalue() {
+                        if (this.cart.length > 0) {
+                            return true;
+                        } else {
+    
+                            return false;
+    
+                        }
+                    },
+                    removeproductfrominve()
+                    {
+                        if(this.cart.length <= 0)
+                        {
+                            return true;
+                        }
+                        else{
+                            false;
+                        }
+    
+    
+                    },
+                    removeproduct(subject) {
+                        this.cart2.pop(subject);
+                        this.cart.pop(subject);
+    
+                    }
+                },
+                computed: {
+                    cartItemCount() {
+    
+                        return this.cart.length;
+                    }
+                },
+    
+        })
+
+    </script>
     
 </body>
 </html>

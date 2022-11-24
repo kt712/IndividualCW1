@@ -1,336 +1,350 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <script src="subjects.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personnal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="subjects.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js"></script>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <title>Individual</title>
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
-
     <div id="open">
-        <header>
-           <h1 v-text="sitename" class="text-center"></h1> 
-           <button v-on:click='showCheckout' v-show="cartItemCount >0" v-if="buttonvalue()">
-            {{cartItemCount}}
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light shadow bg-light container-fluid">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <h4 class="nav-link h5 text-black">Ismail Classroom</h4>
+                        </li>
+                    </ul>
 
-            <span class="fas fa-cart-plus">Checkout</span>
-           </button>
-           <div style="display: flex; flex-wrap: wrap;">
-            <div v-for="subject in cart2" v-show="showCartItems">
-                <h3 v-text="subject.title"></h3>
-                <figure>
-                    <img v-bind:src="subject.image" height="70" width="70">
-                </figure>
-                <p>Location:{{subject.location}}</p>
-                <p>Price:$ {{subject.price}}</p>
-                <p>Spaces: only {{subject.availableInventory - cartCount(subject.id)}} are left!</p>
-                <button v-on:click='removeproduct(subject)' v-if='canAddToCart(subject)'>Remove from cart</button> 
+                </div>
+                <div class="d-flex align-items-center">
+                    <a class="text-reset me-3" v-on:click="showCheckout">
+                        <i class="fas  fa-cart-plus"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">{{cartItemCount}}</span>
+                    </a>
 
-                <button disabled="disable" v-else></button>
+                </div>
+            </div>
+        </nav>
+        <div class="container mt-5">
+            <div v-if="showProduct">
+                <div class="row pt-5">
+                    <h4></h4>
+                    <div class="col-lg-2">
+                        <div class="still">
+                            <div class="form-check">
+                                <input class="form-check-input" value="Ascending" type="radio" id="ascending"
+                                    v-model="lowHigh" />
+                                <label class="form-check-label" for="ascending">Ascending</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" value="Descending" type="radio" id="descending"
+                                    v-model="lowHigh" />
+                                <label class="form-check-label" for="descending">Descending</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <form class="form-a">
+                                <div class="col-md-8 mb-2">
+                                    <div class="form-group">
+                                        <input type="text" v-model="searchInput"
+                                            class="form-control p-2 ps-3 rounded-0 shadow-0 form-control-lg form-control-a">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-group">
+                                        <select name="sortBy" v-model="sortBy"
+                                            class="form-control p-2 bg-white ps-3 form-select rounded-0 shadow-0 form-control-a form-control-lg">
+                                            <option>--Sort By--</option>
+                                            <option value="price">Price</option>
+                                            <option value="location">Location</option>
+                                            <option value="avalibility">Avalibility</option>
+                                            <option value="subject">Subject</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                        <div class="product-list">
+                            <div class="row"  style="display: flex; flex-wrap: wrap;" >
+                                <div v-for="subject in filterLessons()" class="container border border-primary" style="width:20%; padding:20px; margin:20px;" >
+                                    <div>
+                                        <div>
+                                            <img v-bind:src="subject.image" alt="" width="100" height="100">
+                                        </div>
+                                        <div class="card-body px-0 py-2">
+                                            <small class="text-black-50">Spaces {{subject.availableInventory > 0 ?
+                                                subject.availableInventory : "Out of Stock"}}</small>
+                                            <h5 class="mb-0" v-text="subject.title"></h5>
+                                            <p class="mb-0" v-text="subject.location"></p>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p class="mb-0 "><small class="text-black-50">Price:</small>
+                                                        <strong>${{subject.price}}</strong>
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <button type="button" class="btn btn-primary" @click="display = true"
+                                                        v-on:click="addToCart(subject)" :disabled="subject.availableInventory < 1">Add to cart</button>
+                        
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div v-if="filterLessons() == ''">
+                                    <div class="text-center mt-4">
+                                        <img src="images/empty-box.png" alt="" width="160" height="160">
+                                        <p class="mt-2"><strong>{{searchInput}}</strong> not Find</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>
-        </header>
-        <main>
-            <div v-if="showSubject">
-                <table>
-                    <td><b>Sort by::</b></td>
-                    <tr>
-                        <td> <input type="radio" name="a"
-                                    v-on:click="sortedsub(subjects.title)">
-                                    Subject
-                        </td>
-                    <tr>
-                        <td><input type="radio" name="a"
-                                    v-on:click="sortedprice(subjects.price)">
-                                    Price
-                        </td>
-                    </tr>
+            <div class="pt-5" v-else>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="still">
+                            <h2 class="mt-5">Checkout</h2>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-outline mb-3 border mt-4">
+                                        <input type="text" id="form5Example1" v-model="firstName"
+                                            class="form-control" />
+                                        <label class="form-label" for="form5Example1">Firstname</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline mb-3 border mt-4">
+                                        <input type="text" id="form5Example1" v-model="lastName" class="form-control" />
+                                        <label class="form-label" for="form5Example1">Lastname</label>
+                                    </div>
 
-                    <tr>
-                        <td><input type="radio" name="a"
-                                    v-on:click="sortedinventory(subjects.availableInventory)">
-                                    Availability
-                                </td>
-                    </tr>
-                    <tr>
-                        <td><input type="radio" name="a"
-                                    v-on:click="sortedlocation(subjects.location)">
-                                    Location
-                                </td>
-                    </tr>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-outline mb-4 border">
+                                        <input type="number" id="form5Example2" v-model="phoneNumber"
+                                            class="form-control" />
+                                        <label class="form-label" for="form5Example2">Phone Number</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <button class="btn main-color text-white mb-4" v-on:click="placeOrder">Place Order</button>
+                        </div>
 
-                </table>
-                <div>
-                    <br>
-                    <table>
-                        <tr>
-                            <td><input type="radio" name="b"
-                                v-on:click="sortingasc(subjects.title)">
-                                Ascending
-                    </td>
-                           
-                        </tr>
-                        <tr>
-                            <td><input type="radio" name="b"
-                                v-on:click="sortingdsc(subjects.title)">
-                                Descending
-                    </td>
-                        </tr>
-                    </table>
+                    </div>
+                    <div class="col-lg-6">
+                        <div v-for="subject in checkOut()" class="col-lg-12 p-2">
+                            <div class="p-2 border ">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="mt-2">
+                                        <h4 v-text="subject.title"></h4>
+                                        <div class="mt-4">
+                                            <h5 class=" mb-0" v-text="subject.location"></h5>
+                                            <p class="mb-0">Price: ${{subject.price}}</p>
+
+                                            <button class="btn btn-danger"
+                                                v-on:click="removeCartItem(subject.id)"><small>Remove</small></button>
+                                        </div>
+                                    </div>
+                                    <div class="image">
+                                        <figure class="mb-0">
+                                            <img v-bind:src="subject.image" alt="" width="120" height="140">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="checkOut() == ''">
+                            <div class="text-center mt-4">
+                                <img src="images/zero.png" alt="" width="160" height="160">
+                                <p class="mt-2"><strong>Cart Empty</strong></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <div v-for="subject in subjects"  class="container border border-primary" style="width:20%; padding:20px; margin:20px;" >
-                      <img v-bind:src="subject.image" height="100" width="100">
-                      <div class="card-body"></div>
-                       <h2 v-text="subject.title"class="card-title" ></h2>
-                        <p class="card-text" >Location:{{subject.location}}</p>
-                        <p class="card-text">Price: $ {{subject.price}}</p>
-                        <p class="card-text">Spaces:  {{subject.availableInventory - cartCount(subject.id)}} available!</p>
-    
-    
-                        <button  class="btn btn-primary" @click="display = true" v-on:click='addToCart(subject)' v-if='canAddToCart(subject)'>Add
-                            to cart</button>
-    
-                        <button v-else>Add to cart</button>
-    
-                      </div>
-                     </div>
-                </div>
-                <div v-else>
-                    <h2 style="text-align: center;">Checkout</h2>
-                    <p>
-                        <b>First Name:</b>
-                        <input v-model="order.firstName" placeholder="ENTER YOUR FIRST NAME!" required />
-                    </p>
-                    <p>
-                        <b>Last Name:</b>
-                        <input v-model="order.lastName" placeholder="ENTER YOUR LAST NAME!" />
-                    </p>
-                
-                    <p>
-                        <b>Phone:</b>
-                        <input type ="number"  v-model="order.phone" placeholder="ENTER UR PHONE NUMBER!" />
-                    </p>
-                    <h2>Order Information</h2>
-                   
-                    <p>First Name: {{order.firstName}}</p>
-                     
-                     <p>Last Name: {{order.lastName}}</p>
-                 
-                     <p>Phone number: {{order.phone}}</p>
-     
-                     <button v-on:click="submitForm">Place Order</button>
-
             </div>
-        </main>
+        </div>
     </div>
     <script type="text/javascript">
-        var myClass = new Vue({
+        var webstore = new Vue({
             el: '#open',
             data: {
-    
-    sitename: 'Welcome to Ismails classroom',
-    subjects: mySub,
+                showProduct: true,
+                lowHigh: 'Ascending',
+                subjects: mySub,
+                cart: [],
+                searchInput: '',
+                sortBy: '--Sort By--',
+                firstName: "",
+                lastName: "",
+                phoneNumber: ""
+            },
+            methods: {
+                showCheckout() {
+                    this.showProduct = this.showProduct ? false : true;
+                },
+                addToCart(subject) {
+                    this.cart.push(subject)
+                    subject.availableInventory -= 1
+                    console.log(this.cart)
+                },
+                checkOut() {
+                    let show = this.cart
+                    return show
+                },
+                removeCartItem(id) {
+                    let showcart = this.cart
+                    let less = this.subjects
+                    for (let i = 0; i < showcart.length; i++) {
+                        console.log(showcart[i].id)
+                        if (id == showcart[i].id) {
+                            showcart.splice(i, 1)
 
-    display: false,
-    
-    cart: [],
-    cart2: [],
-    showSubject: true,
-    showCartItems:false,
+                        }
+                    }
+                    for (let i = 0; i < less.length; i++) {
+                        console.log(less[i].id)
+                        if (id == less[i].id) {
+                            less[i].stock += 1
 
-    order: {
-        firstName: '',
-        lastName: '',
-        phone: '',
-       
-    },
-
-},
-methods: {
-   addToCart(subject) {
-   this.cart.push(subject.id);
-   this.cart2.push(subject);
-    
-    
-    
-   },
-   
-sortedsub() {
-    function compare(x, y) {
-        if (x.title > y.title)
-           return 1;
-        else{
-           return -1;
-          }
-                        
-    
-    
-        }
-        return this.subjects.sort(compare);
-    
-    },
-    sortedinventory() {
-       function compare(x, y) {
-         if (x.availableInventory > y.availableInventory)
-            return 1;
-         else{
-            return -1;
-          }
-    
-    
-        }
-     return this.subjects.sort(compare);
-    },
-    
-     sortedlocation() {
-                        function compare(x, y) {
-                            if (x.location > y.location)
-                                return 1;
-                           else{
-                               return -1;
-                           }
-    
-    
                         }
-                        return this.subjects.sort(compare);
-    
-                    },
-    
-                    sortedprice() {
-                        function compare(x, y) {
-                            if (x.price > y.price)
-                                return 1;
-                            else{
-                                return -1
-                            };
-    
-                        }
-                        return this.subjects.sort(compare);
-    
-                    },   
-                    sortingasc() {
-                        function compare(a, b) {
-                            if (a.title > b.title)
-                                return 1;
-                           else{
-                               return -1;
-                           }
-    
-    
-                        }
-                        return this.subjects.sort(compare);
-    
-                    },
-
-
-                    sortingdsc() {
-                        function compare(a, b) {
-                            if (a.title < b.title)
-                                return 1;
-                           else{
-                               return -1
-                           }
-    
-    
-                        }
-                        return this.subjects.sort(compare);
-    
-                    },
-                    showCheckout() {
-                        this.showSubject = this.showSubject ? false : true;
-                        this.showCartItems=this.showCartItems ? false:true;
-                        
-    
-                    },
-                    submitForm(l, b, c) {
-                        if (this.order.firstName == "" && this.order.lastName == "" && this.order.phone == "") {
-    
-                             alert('PLEASE ENTER YOUR DETAILS FOR ORDERS')
-    
-                        }
-                        if (this.order.firstName == "") {
-                             alert('PLEASE ENTER YOUR NAME')
-                        }
-                        if (this.order.lastName == "") {
-                            return alert('PLEASE ENTER YOU LASTNAME')
-                        }
-                        if (this.order.phone == "") {
-                            return alert('PLEASE ENTER YOUR MOBILE NUM OR PHONE', { background: 'black' });
-                        }
-                        else {
-    
-    
-                            this.order.firstName = "";
-                            this.order.lastName = "";
-                            this.order.phone = "";
-    
-                            return alert(' You have succesfully placed order')
-    
-    
-                        }
-    
-                    },
-                    canAddToCart(subject) {
-                        return subject.availableInventory > this.cartCount(subject.id);
-                    },
-                    cartCount(id) {
-    
-                        let count = 0;
-                        for (let i = 0; i < this.cart.length; i++) {
-                            if (this.cart[i] === id) {
-                                count++;
-    
-    
-                            }
-                        }
-                        return count;
-    
-    
-                    },
-                   
-                    buttonvalue() {
-                        if (this.cart.length > 0) {
-                            return true;
-                        } else {
-    
-                            return false;
-    
-                        }
-                    },
-                    removeproductfrominve()
-                    {
-                        if(this.cart.length <= 0)
-                        {
-                            return true;
-                        }
-                        else{
-                            false;
-                        }
-    
-    
-                    },
-                    removeproduct(subject) {
-                        this.cart2.pop(subject);
-                        this.cart.pop(subject);
-    
                     }
                 },
-                computed: {
-                    cartItemCount() {
-    
-                        return this.cart.length;
+                placeOrder() {
+                    let showcart = this.cart
+                    if (this.firstName == '' && this.lastName == '' && this.phoneNumber == '' && this.cart.length == 0) {
+                        Swal.fire(
+                            'Error!',
+                            'Fill all details!',
+                            'Error'
+                        )
                     }
+                    else{
+                        Swal.fire(
+                        'Success!',
+                        'Order submitted successfully!',
+                        'success'
+                        )
+                        this.firstName = ''
+                        this.lastName = ''
+                        this.phoneNumber = ''
+                        showcart.splice(0, showcart.length)
+                    }
+                    
                 },
-    
-        })
+                cartCount(id) {
+                    let count = 0
+                    for (let i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i] === id) {
+                            count++;
+                        }
+                    }
+                    return count
+                },
+                sortByPrice: function (priceArray) {
+                    function compare(a, b) {
+                        if (a.price > b.price)
+                            return 1;
+                        if (a.price < b.price)
+                            return -1;
+                        return 0;
+                    }
+                    return priceArray.sort(compare);
+                },
+                sortBySubject: function (titleArray) {
+                    function compare(a, b) {
+                        if (a.title > b.title)
+                            return 1;
+                        if (a.title < b.title)
+                            return -1;
+                        return 0;
+                    }
+                    return titleArray.sort(compare);
+                },
+                sortByLocation: function (locationArray) {
+                    function compare(a, b) {
+                        if (a.location > b.location)
+                            return 1;
+                        if (a.location < b.location)
+                            return -1;
+                        return 0;
+                    }
+                    return locationArray.sort(compare);
+                },
+                sortByAva: function (avaArray) {
+                    function compare(a, b) {
+                        if (a.availableInventory > b.availableInventory)
+                            return 1;
+                        if (a.availableInventory < b.availableInventory)
+                            return -1;
+                        return 0;
+                    }
+                    return avaArray.sort(compare);
+                },
 
+                filterLessons: function () {
+                    let tempLessons = this.subjects
+
+                    tempLessons = tempLessons.filter((subject) => {
+                        return subject.title.toLowerCase().match(this.searchInput.toLowerCase()) || subject.location.toLowerCase().match(this.searchInput.toLowerCase())
+                    })
+                    if (this.sortBy == 'price') {
+                        tempLessons = this.sortByPrice(tempLessons)
+                    }
+                    else if (this.sortBy == 'subject') {
+                        tempLessons = this.sortBySubject(tempLessons)
+                    }
+                    else if (this.sortBy == 'location') {
+                        tempLessons = this.sortByLocation(tempLessons)
+                    }
+                    else if (this.sortBy == 'stock') {
+                        tempLessons = this.sortByAva(tempLessons)
+                    }
+
+                    if (this.lowHigh == 'Ascending') {
+                        return tempLessons
+                    }
+                    else if (this.lowHigh == 'Descending') {
+                        return tempLessons.reverse()
+                    }
+                    return tempLessons
+                }
+
+            },
+            computed: {
+                cartItemCount: function () {
+                    return this.cart.length
+                },
+            }
+        });
     </script>
-    
+
+
 </body>
+
 </html>
